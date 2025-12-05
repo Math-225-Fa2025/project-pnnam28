@@ -1,9 +1,8 @@
 ---
-title: "Presentation title"
-subtitle: "Presentation subtitle (if any)"
-author: "Team name <br> Names of team members"
-institute: "University of Edinburgh"
-date: "`r Sys.Date()`"
+title: "Sleep Health & Lifestyle Analysis"
+author: "Nam Pham"
+institute: "Final Project"
+
 output:
   xaringan::moon_reader:
     css: xaringan-themer.css
@@ -14,190 +13,216 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
-
-```{r load-packages, include = FALSE}
+```{r load-packages, message=FALSE, include=FALSE}
 # Add any additional packages you need to this chunk
 library(tidyverse)
 library(tidymodels)
 library(palmerpenguins)
 library(knitr)
 library(xaringanthemer)
+library(janitor)
 ```
 
 ```{r setup, include=FALSE}
-# For better figure resolution
-knitr::opts_chunk$set(fig.retina = 3, dpi = 300, fig.width = 6, fig.asp = 0.618, out.width = "80%")
-```
-
-```{r load-data, include=FALSE}
-# Load your data here
-```
-
-```{r}
-style_xaringan(
-  title_slide_background_image = "img/confetti.jpg"
+knitr::opts_chunk$set(
+fig.retina = 3,
+dpi = 300,
+fig.width = 6,
+fig.asp = 0.618,
+out.width = "80%",
+message = FALSE,
+warning = FALSE
 )
 ```
 
+```{r load-data, include=FALSE}
+sleep <- read.csv("../../data/Sleep_health_and_lifestyle_dataset.csv") %>%
+clean_names() %>%
+separate(blood_pressure, into = c("systolic","diastolic"), sep = "/") %>%
+mutate(
+systolic = as.numeric(systolic),
+diastolic = as.numeric(diastolic),
+gender = factor(gender),
+bmi_category = factor(bmi_category,
+levels = c("Underweight","Normal","Overweight","Obese"),
+ordered = TRUE),
+sleep_disorder = factor(sleep_disorder),
+occupation = factor(occupation)
+)
 
+model_quality <- lm(
+quality_of_sleep ~ sleep_duration +
+stress_level +
+physical_activity_level +
+sleep_disorder,
+data = sleep
+)
+```
+
+```{r, include=FALSE}
+style_xaringan(
+  title_slide_background_image = "img/confetti.jpg",
+  text_font_google   = google_font("Lato"),
+  header_font_google = google_font("Montserrat"),
+  code_font_google   = google_font("Fira Mono")
+)
+
+```
+
+---
 class: center, middle
 
-## A statement of the overall goal / research question
+**Overall Goal / Research Question**
+
+"What Lifestyle and Health Factors Affect Sleep Quality?"
+
+How: **stress, sleep duration, sleep disorders (Insomnia, Sleep Apnea, None), physical activity, and BMI** affect sleep quality?
 
 ---
+class: center, middle
 
+```{r, eval=TRUE,echo=TRUE}
+glimpse(sleep)
+```
+
+---
+class: center, middle
+
+Takeaways
+
+Average sleep duration ≈ 7.1 hours
+
+Sleep quality ≈ 7.3 (on a 1–10 scale)
+
+Stress ranges from 3–8, mean ≈ 5.4
+
+Physical activity and daily steps vary widely
+
+Heart rate around 70 bpm on average
+
+
+---
+class: inverse, center, middle
+Sleep Quality by Sleep Disorder (Distribution)
+```{r, echo=FALSE}
+sleep %>%
+ggplot(aes(x = quality_of_sleep, fill = sleep_disorder)) +
+geom_density(alpha = 0.45) +
+labs(
+title = "Distribution of Sleep Quality by Sleep Disorder",
+x = "Sleep Quality",
+y = "Density",
+fill = "Sleep Disorder"
+) +
+theme_minimal(base_size = 18)
+```
+
+---
+class: inverse, center, middle
+Stress vs Sleep Quality
+```{r, echo=FALSE}
+sleep %>%
+ggplot(aes(x = stress_level, y = quality_of_sleep)) +
+geom_point(alpha = 0.6) +
+geom_smooth(method = "lm", se = FALSE, color = "blue") +
+labs(
+title = "Stress Level vs Sleep Quality",
+x = "Stress Level (1–10)",
+y = "Sleep Quality (1–10)"
+) +
+theme_minimal(base_size = 18)
+```
+---
+class: inverse, center, middle
+Sleep Quality by BMI
+```{r, echo=FALSE}
+sleep %>%
+group_by(bmi_category) %>%
+summarise(mean_quality = mean(quality_of_sleep, na.rm = TRUE)) %>%
+ggplot(aes(x = bmi_category, y = mean_quality)) +
+geom_segment(aes(x = bmi_category, xend = bmi_category,
+y = 0, yend = mean_quality),
+color = "darkgreen", linewidth = 1.2) +
+geom_point(size = 6, color = "darkgreen") +
+labs(
+title = "Mean Sleep Quality by BMI Category",
+x = "BMI Category",
+y = "Mean Sleep Quality"
+) +
+theme_minimal(base_size = 18)
+```
+
+---
 class: inverse, center, middle
 
-# Section title
+Modeling Sleep Quality
+Regression Model
 
----
+Model:
 
-# Hello World
+quality_of_sleep∼sleep_duration+stress_level+physical_activity_level+sleep_disorder
 
-- Click the `Knit` button to compile your presentation
-
-- Make sure to commit and push all resulting files to your GitHub repo
-
----
-
-class: inverse, middle, center
-
-# Using xaringan
-
----
-
-# xaringan
-
-- The presentation is created using the `xaringan` package
-
-- Use `---` to separate slides and `--` for incremental builds
-
---
-
-- Like this
-
----
-
-# Layouts
-
-You can use plain text
-
-- or bullet points
-
-.pull-left[
-or text in two columns $^*$
-]
-.pull-right[
-- like
-- this
-]
-
-.footnote[
-[*] And add footnotes
-]
-
----
-
-# Code
-
-```{r boring-regression}
-# a boring regression
-model <- lm(dist ~ speed, data = cars)
-tidy(model)
-glance(model)
-```
-
----
-
-# Plots
-
-```{r recode-species, echo = FALSE}
-# In this chunk I'm doing a bunch of analysis that I don't want to present 
-# in my slides. But I need the resulting data frame for a plot I want to present.
-iris_modified <- iris %>%
-  mutate(Species = fct_other(Species, keep = "setosa"))
-```
-
-```{r plot-iris, echo = FALSE}
-# Code hidden with echo = FALSE
-# Uses modified iris dataset from previous chunk
-# Play around with height and width until you're happy with the look
-ggplot(data = iris_modified, mapping = aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
-  geom_point() + 
-  theme_minimal() # theme options: https://ggplot2.tidyverse.org/reference/ggtheme.html
-```
-
----
-
-## Plot and text
-
-.pull-left[
-- Some text
-- goes here
-]
-.pull-right[
-```{r warning=FALSE, out.width="100%", fig.width=4, echo=FALSE}
-# see how I changed out.width and fig.width from defaults
-# to make the figure bigger
-ggplot(penguins, aes(x = bill_length_mm, y = species, color = species)) +
-  geom_boxplot() +
-  theme_minimal()
-```
-]
-
----
-
-# Tables
-
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
-
-```{r iris-table, echo = FALSE}
-kable(head(iris), format = "html")
-```
-
----
-
-# Images
-
-```{r castle, echo = FALSE, out.width = "60%", fig.align = "center", fig.cap = "Image credit: Photo by Jörg Angeli on Unsplash."}
-include_graphics("https://images.unsplash.com/photo-1535448033526-c0e85c9e6968?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80")
-```
-
-Or you can also include a full page image. See next slide.
-
----
-
-background-image: url(https://images.unsplash.com/photo-1535448033526-c0e85c9e6968?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80)
-
----
-
-# Math Expressions
-
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. &#36;\alpha+\beta$ renders $\alpha+\beta$. You can use the display style with double dollar signs:
+```{r}
+broom::tidy(model_quality)
 
 ```
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+---
+class: inverse, center, middle
+Key Coefficients
+
+Sleep duration: +0.49
+
+Each additional hour of sleep → ~0.49 increase in sleep quality
+
+Stress level: −0.41
+
+Each 1-point increase in stress → ~0.41 decrease in sleep quality
+
+Physical activity level: +0.0047
+
+Small but statistically significant positive effect
+
+Sleep disorder (vs Insomnia):
+
+None: +0.35
+
+Sleep Apnea: +0.24
+
+Interpretation
+
+People with no sleep disorder and lower stress who sleep longer report the highest sleep quality.
+---
+class: inverse, center, middle
+```{r}
+broom::glance(model_quality)
 ```
 
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+Highlights
 
-Limitations:
+R² ≈ 0.895 → ~89.5% of variation in sleep quality explained
 
-1. The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
+Residuals are small → predictions close to observed values
 
-1. There should not be spaces after the opening `$` or before the closing `$`.
+Stress and sleep duration are the dominant predictors
+---
+class: inverse, center, middle
 
-1. Math does not work on the title slide (see [#61](https://github.com/yihui/xaringan/issues/61) for a workaround).
+Conclusion
+Final Conclusion
+
+Stress level and sleep duration are the strongest predictors of sleep quality.
+
+Higher stress → much worse sleep
+
+Longer sleep → better subjective sleep quality
+
+Sleep disorders, especially insomnia, significantly reduce sleep quality even after controlling for lifestyle factors.
+
+Physical activity has a smaller but positive effect.
+
+BMI and gender show noticeable but weaker associations.
 
 ---
+class: center, middle
 
-# Feeling adventurous?
-
-- Want to find out more about `xaringan`? See https://slides.yihui.name/xaringan/#1.
-
-- You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
-
-- But some of you might want to play around with slide styling. The 
-`xaringanthemer` provides some solutions for this that: https://pkg.garrickadenbuie.com/xaringanthemer.
-
-- And if you want more bells and whistles, there is also `xaringanExtra`: https://pkg.garrickadenbuie.com/xaringanExtra.
+Thank You!

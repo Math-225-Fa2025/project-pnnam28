@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Presentation title</title>
+    <title>Sleep Health &amp; Lifestyle Analysis</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Team name   Names of team members" />
-    <meta name="date" content="2025-09-03" />
-    <script src="libs/header-attrs-2.29/header-attrs.js"></script>
+    <meta name="author" content="Nam Pham" />
+    <script src="libs/header-attrs-2.30/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -13,19 +12,13 @@
 class: center, middle, inverse, title-slide
 
 .title[
-# Presentation title
-]
-.subtitle[
-## Presentation subtitle (if any)
+# Sleep Health &amp; Lifestyle Analysis
 ]
 .author[
-### Team name <br> Names of team members
+### Nam Pham
 ]
 .institute[
-### University of Edinburgh
-]
-.date[
-### 2025-09-03
+### Final Project
 ]
 
 ---
@@ -38,229 +31,167 @@ class: center, middle, inverse, title-slide
 
 
 
-``` r
-style_xaringan(
-  title_slide_background_image = "img/confetti.jpg"
-)
-```
-
-
+---
 class: center, middle
 
-## A statement of the overall goal / research question
+**Overall Goal / Research Question**
+
+"What Lifestyle and Health Factors Affect Sleep Quality?"
+
+How: **stress, sleep duration, sleep disorders (Insomnia, Sleep Apnea, None), physical activity, and BMI** affect sleep quality?
 
 ---
+class: center, middle
 
+
+``` r
+glimpse(sleep)
+```
+
+```
+## Rows: 374
+## Columns: 14
+## $ person_id               &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,…
+## $ gender                  &lt;fct&gt; Male, Male, Male, Male, Male, Male, Male, Male…
+## $ age                     &lt;int&gt; 27, 28, 28, 28, 28, 28, 29, 29, 29, 29, 29, 29…
+## $ occupation              &lt;fct&gt; Software Engineer, Doctor, Doctor, Sales Repre…
+## $ sleep_duration          &lt;dbl&gt; 6.1, 6.2, 6.2, 5.9, 5.9, 5.9, 6.3, 7.8, 7.8, 7…
+## $ quality_of_sleep        &lt;int&gt; 6, 6, 6, 4, 4, 4, 6, 7, 7, 7, 6, 7, 6, 6, 6, 6…
+## $ physical_activity_level &lt;int&gt; 42, 60, 60, 30, 30, 30, 40, 75, 75, 75, 30, 75…
+## $ stress_level            &lt;int&gt; 6, 8, 8, 8, 8, 8, 7, 6, 6, 6, 8, 6, 8, 8, 8, 8…
+## $ bmi_category            &lt;ord&gt; Overweight, Normal, Normal, Obese, Obese, Obes…
+## $ systolic                &lt;dbl&gt; 126, 125, 125, 140, 140, 140, 140, 120, 120, 1…
+## $ diastolic               &lt;dbl&gt; 83, 80, 80, 90, 90, 90, 90, 80, 80, 80, 80, 80…
+## $ heart_rate              &lt;int&gt; 77, 75, 75, 85, 85, 85, 82, 70, 70, 70, 70, 70…
+## $ daily_steps             &lt;int&gt; 4200, 10000, 10000, 3000, 3000, 3000, 3500, 80…
+## $ sleep_disorder          &lt;fct&gt; None, None, None, Sleep Apnea, Sleep Apnea, In…
+```
+
+---
+class: center, middle
+
+Takeaways
+
+Average sleep duration ≈ 7.1 hours
+
+Sleep quality ≈ 7.3 (on a 1–10 scale)
+
+Stress ranges from 3–8, mean ≈ 5.4
+
+Physical activity and daily steps vary widely
+
+Heart rate around 70 bpm on average
+
+
+---
+class: inverse, center, middle
+Sleep Quality by Sleep Disorder (Distribution)
+&lt;img src="presentation_files/figure-html/unnamed-chunk-3-1.png" width="80%" /&gt;
+
+---
+class: inverse, center, middle
+Stress vs Sleep Quality
+&lt;img src="presentation_files/figure-html/unnamed-chunk-4-1.png" width="80%" /&gt;
+---
+class: inverse, center, middle
+Sleep Quality by BMI
+&lt;img src="presentation_files/figure-html/unnamed-chunk-5-1.png" width="80%" /&gt;
+
+---
 class: inverse, center, middle
 
-# Section title
+Modeling Sleep Quality
+Regression Model
 
----
+Model:
 
-# Hello World
-
-- Click the `Knit` button to compile your presentation
-
-- Make sure to commit and push all resulting files to your GitHub repo
-
----
-
-class: inverse, middle, center
-
-# Using xaringan
-
----
-
-# xaringan
-
-- The presentation is created using the `xaringan` package
-
-- Use `---` to separate slides and `--` for incremental builds
-
---
-
-- Like this
-
----
-
-# Layouts
-
-You can use plain text
-
-- or bullet points
-
-.pull-left[
-or text in two columns `\(^*\)`
-]
-.pull-right[
-- like
-- this
-]
-
-.footnote[
-[*] And add footnotes
-]
-
----
-
-# Code
+quality_of_sleep∼sleep_duration+stress_level+physical_activity_level+sleep_disorder
 
 
 ``` r
-# a boring regression
-model &lt;- lm(dist ~ speed, data = cars)
-tidy(model)
+broom::tidy(model_quality)
 ```
 
 ```
-## # A tibble: 2 × 5
-##   term        estimate std.error statistic  p.value
-##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
-## 1 (Intercept)   -17.6      6.76      -2.60 1.23e- 2
-## 2 speed           3.93     0.416      9.46 1.49e-12
+## # A tibble: 6 × 5
+##   term                      estimate std.error statistic  p.value
+##   &lt;chr&gt;                        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)                5.51      0.426       12.9  7.72e-32
+## 2 sleep_duration             0.489     0.0499       9.80 2.67e-20
+## 3 stress_level              -0.413     0.0207     -20.0  1.17e-60
+## 4 physical_activity_level    0.00468   0.00113      4.15 4.12e- 5
+## 5 sleep_disorderNone         0.352     0.0581       6.07 3.27e- 9
+## 6 sleep_disorderSleep Apnea  0.241     0.0704       3.43 6.79e- 4
 ```
+---
+class: inverse, center, middle
+Key Coefficients
+
+Sleep duration: +0.49
+
+Each additional hour of sleep → ~0.49 increase in sleep quality
+
+Stress level: −0.41
+
+Each 1-point increase in stress → ~0.41 decrease in sleep quality
+
+Physical activity level: +0.0047
+
+Small but statistically significant positive effect
+
+Sleep disorder (vs Insomnia):
+
+None: +0.35
+
+Sleep Apnea: +0.24
+
+Interpretation
+
+People with no sleep disorder and lower stress who sleep longer report the highest sleep quality.
+---
+class: inverse, center, middle
 
 ``` r
-glance(model)
+broom::glance(model_quality)
 ```
 
 ```
 ## # A tibble: 1 × 12
-##   r.squared adj.r.squared sigma statistic  p.value    df logLik   AIC   BIC
-##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1     0.651         0.644  15.4      89.6 1.49e-12     1  -207.  419.  425.
+##   r.squared adj.r.squared sigma statistic   p.value    df logLik   AIC   BIC
+##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     0.895         0.893 0.391      626. 1.68e-177     5  -176.  366.  394.
 ## # ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;
 ```
 
+Highlights
+
+R² ≈ 0.895 → ~89.5% of variation in sleep quality explained
+
+Residuals are small → predictions close to observed values
+
+Stress and sleep duration are the dominant predictors
 ---
+class: inverse, center, middle
 
-# Plots
+Conclusion
+Final Conclusion
 
+Stress level and sleep duration are the strongest predictors of sleep quality.
 
+Higher stress → much worse sleep
 
-&lt;img src="presentation_files/figure-html/plot-iris-1.png" width="80%" /&gt;
+Longer sleep → better subjective sleep quality
 
----
+Sleep disorders, especially insomnia, significantly reduce sleep quality even after controlling for lifestyle factors.
 
-## Plot and text
+Physical activity has a smaller but positive effect.
 
-.pull-left[
-- Some text
-- goes here
-]
-.pull-right[
-&lt;img src="presentation_files/figure-html/unnamed-chunk-2-1.png" width="100%" /&gt;
-]
-
----
-
-# Tables
-
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
-
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:right;"&gt; Sepal.Length &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Sepal.Width &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Petal.Length &lt;/th&gt;
-   &lt;th style="text-align:right;"&gt; Petal.Width &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Species &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 4.9 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 4.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.2 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.3 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 4.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.1 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.5 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5.0 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.6 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:right;"&gt; 5.4 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 3.9 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 1.7 &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.4 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; setosa &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
+BMI and gender show noticeable but weaker associations.
 
 ---
+class: center, middle
 
-# Images
-
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="https://images.unsplash.com/photo-1535448033526-c0e85c9e6968?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1650&amp;q=80" alt="Image credit: Photo by Jörg Angeli on Unsplash." width="60%" /&gt;
-&lt;p class="caption"&gt;Image credit: Photo by Jörg Angeli on Unsplash.&lt;/p&gt;
-&lt;/div&gt;
-
-Or you can also include a full page image. See next slide.
-
----
-
-background-image: url(https://images.unsplash.com/photo-1535448033526-c0e85c9e6968?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1650&amp;q=80)
-
----
-
-# Math Expressions
-
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. &amp;#36;\alpha+\beta$ renders `\(\alpha+\beta\)`. You can use the display style with double dollar signs:
-
-```
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
-```
-
-`$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$`
-
-Limitations:
-
-1. The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
-
-1. There should not be spaces after the opening `$` or before the closing `$`.
-
-1. Math does not work on the title slide (see [#61](https://github.com/yihui/xaringan/issues/61) for a workaround).
-
----
-
-# Feeling adventurous?
-
-- Want to find out more about `xaringan`? See https://slides.yihui.name/xaringan/#1.
-
-- You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
-
-- But some of you might want to play around with slide styling. The 
-`xaringanthemer` provides some solutions for this that: https://pkg.garrickadenbuie.com/xaringanthemer.
-
-- And if you want more bells and whistles, there is also `xaringanExtra`: https://pkg.garrickadenbuie.com/xaringanExtra.
+Thank You!
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
