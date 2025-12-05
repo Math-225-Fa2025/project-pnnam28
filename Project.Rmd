@@ -1,0 +1,280 @@
+---
+title: "Final Project"
+author: "Nam Pham"
+output: 
+  tufte::tufte_handout:
+    latex_engine: xelatex
+    highlight: pygments
+    keep_tex: true
+    citation_package: natbib
+  tufte::tufte_html:
+    css: ../lab.css
+    tufte_variant: "envisioned"
+    highlight: pygments
+link-citations: true
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,          
+  message = FALSE,       
+  warning = FALSE,      
+  fig.align = "center",  
+  fig.width = 7,       
+  fig.height = 5        
+)
+```
+
+# 1. Data Setup
+```{r eval = TRUE, message = FALSE}
+library(tidyverse)
+library(skimr)
+library(janitor)
+library(broom)
+library(rvest) 
+```
+
+Here I import my dataset in sleep and set it to clean_names for a further data cleaning. 
+```{r setup_data,  message = FALSE, eval =TRUE, echo=TRUE}
+sleep <- read.csv("data/Sleep_health_and_lifestyle_dataset.csv") %>%
+  clean_names()
+```
+
+```{r, echo=FALSE}
+dim(sleep)
+glimpse(sleep)
+```
+
+
+# 2. Data Cleaning
+
+In the dataset, blood pressure is a string with / symbols so I want to remove it by using separate to remove it and set the blood pressure to be an integer (Numeric).Also set the category varibles in dataset to be factors. 
+
+
+```{r cleaning_dataset,  message = FALSE, eval =TRUE, echo=TRUE}
+# clean dataset 
+sleep_clean <- sleep %>%
+  separate(blood_pressure, into = c("systolic", 
+                                    "diastolic"), 
+           sep= "/", remove = TRUE) %>%
+  mutate(
+    systolic  = as.numeric(systolic),
+    diastolic = as.numeric(diastolic)
+  )
+
+#factor the catagories variables
+sleep_clean <- sleep_clean %>%
+  mutate(
+    gender        = factor(gender),
+    bmi_category  = factor(bmi_category, 
+                           levels = c("Underweight", 
+                                      "Normal", 
+                                      "Overweight", 
+                                      "Obese"),
+                           ordered = TRUE),
+    sleep_disorder = factor(sleep_disorder),
+    occupation    = factor(occupation)
+  )
+
+glimpse(sleep_clean)
+```
+
+# 3. Data Summary
+
+## 3.1 Summary of Key Variables 
+
+Here I will compute some data summary to observe some of the information. 
+
+```{r data_summa,echo=FALSE}
+# Numeric summaries
+sleep_clean %>%
+  select(sleep_duration, quality_of_sleep, physical_activity_level, 
+         stress_level, heart_rate, daily_steps, age) %>%
+  summary()
+
+```
+
+*The descriptive statistics show that participants in this dataset sleep an average of 7.13 hours per night, with sleep durations ranging from 5.8 to 8.5 hours. Self-reported sleep quality ranges from 4 to 9, with a mean of 7.31, indicating generally good perceived sleep among the sample. Lifestyle indicators vary widely: physical activity levels range from 30 to 90 (mean ≈ 59), daily steps range from 3,000 to 10,000 (mean ≈ 6,817), and stress levels fall between 3 and 8 (mean ≈ 5.38), suggesting a moderately stressed population. Health-related measures show average heart rate around 70 bpm. Participant ages span from 27 to 59, with a mean age of 42.*
+
+## 3.2 Sleep Outcomes by Disorder  
+
+```{r sleep_outcomes,echo=FALSE}
+# Sleep outcomes by sleep disorder
+sleep_clean %>%
+  group_by(sleep_disorder) %>%
+  summarise(
+    n = n(),
+    mean_sleep_duration = mean(sleep_duration, na.rm = TRUE),
+    sd_sleep_duration   = sd(sleep_duration, na.rm = TRUE),
+    mean_sleep_quality  = mean(quality_of_sleep, na.rm = TRUE),
+    sd_sleep_quality    = sd(quality_of_sleep, na.rm = TRUE)
+  )
+```
+
+*Comparing outcomes across sleep disorder categories reveals clear differences. Individuals with Insomnia experience the shortest sleep duration (6.59 hours) and the lowest sleep quality (6.53), reflecting the typical impact of insomnia on rest. Participants with no diagnosed sleep disorder report the best overall sleep, averaging 7.36 hours and a sleep quality of 7.63. The Sleep Apnea group falls between the other two, with moderately reduced sleep duration (7.03 hours) and sleep quality (7.21). These patterns suggest that sleep disorders meaningfully affect both objective sleep duration and subjective sleep quality.*
+
+## 3.3 Visual Explorations  
+
+```{r sleep_vs_disorder, echo=FALSE}
+sleep_clean %>%
+  ggplot(aes(x = sleep_disorder, y = quality_of_sleep)) +
+  geom_boxplot() +
+  labs(x = "Sleep Disorder", y = "Sleep Quality",
+       title = "Sleep Quality by Sleep Disorder Status") +
+  theme_minimal(base_size = 18)
+```
+*The boxplot comparing sleep quality across sleep disorder categories shows clear differences between groups. Participants with no sleep disorder have the highest median sleep quality. The insomnia group has a noticeably lower median and a narrower range, indicating consistently poor sleep ratings. The sleep apnea group shows a median between the other two groups but with greater spread, reflecting more variability in quality. Overall, the visualization reinforces the pattern that diagnosed sleep disorders are associated with lower sleep quality.*
+
+```{r sleep_vs_stress, echo=FALSE}
+
+sleep_clean %>%
+  ggplot(aes(x = stress_level, y = quality_of_sleep)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Stress Level", y = "Sleep Quality",
+       title = "Relationship Between Stress and Sleep Quality") +
+  theme_minimal(base_size = 18)
+```
+*The scatterplot of sleep quality versus stress level displays a negative trend, supported by the downward-sloping regression line. As stress levels increase from 3 to 8, sleep quality generally declines. While individual points show some variability, the pattern suggests a clear inverse relationship between stress and perceived sleep quality. This plot visually supports the hypothesis that higher stress is associated with poorer sleep outcomes.*
+
+# 4. Data Linear Regression
+```{r model_regression, echo=FALSE}
+model_quality <- lm(
+  quality_of_sleep ~ sleep_duration +
+    stress_level +
+    physical_activity_level +
+    sleep_disorder,
+  data = sleep_clean
+)
+
+summary(model_quality)
+```
+
+
+The regression model explains a very large portion of variation in sleep quality (R² = 0.895), meaning that the included lifestyle and health variables do an excellent job predicting how well people sleep.
+Let’s break down the coefficients:
+
+
+**Sleep duration: +0.49**
+
+For each additional hour of sleep, sleep quality increases by about 0.49 points
+
+→ People who sleep more tend to have higher sleep quality. 
+
+**Stress level: –0.41**
+
+For every 1-point increase in stress, sleep quality drops by 0.41 points.
+
+→ Higher stress strongly lowers sleep quality.
+
+**Physical activity: +0.0047**
+
+Small coefficient but still statistically significant, every 1 point changes will increase 0.0047 in sleep quality units.
+
+→ Small positive effect.
+
+**Sleep disorder:**
+
+
+*None vs Insomnia — Positive Effect (β = +0.35)*
+
+
+Participants with no sleep disorder score 0.35 points higher in sleep quality than those with insomnia.
+
+
+*Sleep Apnea vs Insomnia — Positive Effect (β = +0.24)*
+
+
+Those with sleep apnea also report better sleep quality than the insomnia group.
+
+
+→ People without disorders have higher sleep quality.
+
+
+# 5. Data Summary With Function
+```{r data_function, echo=FALSE}
+summary_sleep_quality_by_group <- function(data, group_var_name) {
+  data %>%
+    group_by(.data[[group_var_name]]) %>%
+    summarise(
+      n = n(),
+      mean_quality = mean(quality_of_sleep, na.rm = TRUE),
+      sd_quality   = sd(quality_of_sleep, na.rm = TRUE)
+    )
+}
+
+# Example:
+#Sleep quality & Sleep Disorder
+summary_sleep_quality_by_group(sleep_clean, "sleep_disorder")
+#Sleep quality & BMI 
+summary_sleep_quality_by_group(sleep_clean, "bmi_category")
+#Sleep quality & Gender
+summary_sleep_quality_by_group(sleep_clean, "gender")
+```
+
+
+```{r}
+sleep_clean %>%
+  ggplot(aes(x = quality_of_sleep, fill = sleep_disorder)) +
+  geom_density(alpha = 0.45) +
+  scale_fill_manual(values = c(
+    "Insomnia" = "#E57373",
+    "Sleep Apnea" = "#64B5F6",
+    "None" = "#81C784"
+  )) +
+  labs(
+    title = "Distribution of Sleep Quality by Sleep Disorder",
+    x = "Sleep Quality",
+    y = "Density",
+    fill = "Sleep Disorder"
+  ) +
+  theme_minimal(base_size = 18)
+```
+
+```{r}
+sleep_clean %>%
+  group_by(bmi_category) %>%
+  summarise(
+    mean_quality = mean(quality_of_sleep, na.rm = TRUE)
+  ) %>%
+  ggplot(aes(x = bmi_category, y = mean_quality)) +
+  geom_segment(aes(x = bmi_category, 
+                   xend = bmi_category, 
+                   y = 0, 
+                   yend = mean_quality),
+               color = "darkgreen", linewidth = 1.2) +
+  geom_point(size = 6, color = "darkgreen") +
+  labs(
+    title = "Mean Sleep Quality by BMI Category",
+    x = "BMI Category",
+    y = "Mean Sleep Quality"
+  ) +
+  theme_minimal(base_size = 16)
+```
+
+```{r}
+sleep_clean %>%
+  group_by(gender) %>%
+  summarise(
+    mean_quality = mean(quality_of_sleep),
+    sd_quality = sd(quality_of_sleep)
+  ) %>%
+  ggplot(aes(x = gender, y = mean_quality)) +
+  geom_point(size = 4, color = "purple") +
+  geom_errorbar(aes(ymin = mean_quality - sd_quality,
+                    ymax = mean_quality + sd_quality),
+                width = 0.15, color = "purple") +
+  labs(
+    title = "Average Sleep Quality by Gender",
+    x = "Gender",
+    y = "Mean Sleep Quality"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+# Final Conclusion
+
+This project examined how lifestyle and health factors predict adult sleep quality using the Sleep Health and Lifestyle dataset. The results from exploratory analysis and multiple linear regression consistently showed that stress level and sleep duration are the strongest predictors of sleep quality. Higher stress is strongly associated with worse sleep, while longer sleep duration leads to better subjective sleep ratings.
+
+Physical activity also plays a meaningful role, contributing positively to sleep quality, although its effect is smaller compared to stress and sleep duration. Sleep disorders, especially insomnia, significantly reduce sleep quality, even after adjusting for lifestyle variables. This suggests that both behavioral and medical factors influence sleep outcomes. BMI category and demographic variables showed smaller but noticeable differences in sleep quality.
+
+Overall, the findings indicate that improving sleep quality may require addressing both stress management and healthy sleep habits, while also considering clinical sleep issues such as insomnia. Although the dataset is observational and cannot establish causation, the results provide a strong statistical foundation for understanding which lifestyle and health factors matter most for good sleep.
