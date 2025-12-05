@@ -24,6 +24,10 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+
+# Research Question: What lifestyle and health factors most affect sleep quality?
+
 # 1. Data Setup
 ```{r eval = TRUE, message = FALSE}
 library(tidyverse)
@@ -202,32 +206,10 @@ summary_sleep_quality_by_group <- function(data, group_var_name) {
     )
 }
 
-# Example:
-#Sleep quality & Sleep Disorder
-summary_sleep_quality_by_group(sleep_clean, "sleep_disorder")
 #Sleep quality & BMI 
 summary_sleep_quality_by_group(sleep_clean, "bmi_category")
 #Sleep quality & Gender
 summary_sleep_quality_by_group(sleep_clean, "gender")
-```
-
-
-```{r}
-sleep_clean %>%
-  ggplot(aes(x = quality_of_sleep, fill = sleep_disorder)) +
-  geom_density(alpha = 0.45) +
-  scale_fill_manual(values = c(
-    "Insomnia" = "#E57373",
-    "Sleep Apnea" = "#64B5F6",
-    "None" = "#81C784"
-  )) +
-  labs(
-    title = "Distribution of Sleep Quality by Sleep Disorder",
-    x = "Sleep Quality",
-    y = "Density",
-    fill = "Sleep Disorder"
-  ) +
-  theme_minimal(base_size = 18)
 ```
 
 ```{r}
