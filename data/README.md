@@ -1,38 +1,40 @@
-# Sleep Health and Lifestyle
+# Sleep Health and Lifestyle Analysis  
+**Author:** Nam Pham  
+**Date:** 12/04/2025  
 
-## Dataset: Sleep Health and Lifestyle dataset from Kraggle
+## Purpose  
+The purpose of this project is to analyze the Sleep Health and Lifestyle dataset to understand what lifestyle and health factors best predict sleep quality among adults. The project demonstrates skills in data cleaning, visualization, linear regression modeling, and basic exploratory analysis in R.
 
+## Overview  
+The dataset includes 374 participants with information on sleep habits, stress, physical activity, daily steps, heart rate, blood pressure, BMI category, and presence of sleep disorders.
 
-##Codebook
-Person.ID	              Unique identifier assigned to each participant	                          Integer	                   
-Gender	                Participant’s gender	                                                    Categorical (Male/Female)
-Age	                    Participant’s age in years	                                              Integer
-Occupation	            Participant’s current occupation or job title         	                  Categorical	
-Sleep.Duration	        Average number of hours of sleep per night	                              Numeric	
-Quality.of.Sleep	      Self-rated quality of sleep on a numeric scale (e.g., 1–10)	              Integer	
-Physical.Activity.Level	Level or intensity of daily physical activity                             Integer	
-Stress.Level	          Self-rated stress level (e.g., 1–10)	                                    Integer	6
-BMI.Category	          Body Mass Index classification	                                          Categorical (Underweight, Normal, Overweight, Obese)
-Blood.Pressure	        Recorded systolic/diastolic blood pressure (in mmHg)	                    String	
-Heart.Rate	            Average resting heart rate (beats per minute)	                            Integer	
-Daily.Steps	            Average number of steps taken per day	                                    Integer
-Sleep.Disorder	        Indicates if the participant has a diagnosed sleep disorder               Categorical (Yes/No)
+The main research question is:
 
-##Glimpse
+**What lifestyle and health factors best predict sleep quality?**
 
-Rows: 374
-Columns: 13
+Supporting sub-questions include:  
+- How does stress level relate to sleep quality?  
+- Is physical activity associated with better sleep?  
+- Do sleep disorders predict lower sleep quality?  
+- Are health indicators (heart rate, blood pressure, BMI) associated with sleep quality?
 
-$ Person.ID               <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30…
-$ Gender                  <chr> "Male", "Male", "Male", "Male", "Male", "Male", "Male", "Male", "Male", "Male", "Male", "Male", "Male", "Male…
-$ Age                     <int> 27, 28, 28, 28, 28, 28, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 30, 30, 30, 30, 30, 30, 30, 30, 3…
-$ Occupation              <chr> "Software Engineer", "Doctor", "Doctor", "Sales Representative", "Sales Representative", "Software Engineer",…
-$ Sleep.Duration          <dbl> 6.1, 6.2, 6.2, 5.9, 5.9, 5.9, 6.3, 7.8, 7.8, 7.8, 6.1, 7.8, 6.1, 6.0, 6.0, 6.0, 6.5, 6.0, 6.5, 7.6, 7.7, 7.7,…
-$ Quality.of.Sleep        <int> 6, 6, 6, 4, 4, 4, 6, 7, 7, 7, 6, 7, 6, 6, 6, 6, 5, 6, 5, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 5, 5, 8, 6, 7, 6, 6…
-$ Physical.Activity.Level <int> 42, 60, 60, 30, 30, 30, 40, 75, 75, 75, 30, 75, 30, 30, 30, 30, 40, 30, 40, 75, 75, 75, 75, 75, 75, 75, 75, 7…
-$ Stress.Level            <int> 6, 8, 8, 8, 8, 8, 7, 6, 6, 6, 8, 6, 8, 8, 8, 8, 7, 8, 7, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 4, 8, 6, 8, 8…
-$ BMI.Category            <chr> "Overweight", "Normal", "Normal", "Obese", "Obese", "Obese", "Obese", "Normal", "Normal", "Normal", "Normal",…
-$ Blood.Pressure          <chr> "126/83", "125/80", "125/80", "140/90", "140/90", "140/90", "140/90", "120/80", "120/80", "120/80", "120/80",…
-$ Heart.Rate              <int> 77, 75, 75, 85, 85, 85, 82, 70, 70, 70, 70, 70, 70, 70, 70, 70, 80, 70, 80, 70, 70, 70, 70, 70, 70, 70, 70, 7…
-$ Daily.Steps             <int> 4200, 10000, 10000, 3000, 3000, 3000, 3500, 8000, 8000, 8000, 8000, 8000, 8000, 8000, 8000, 8000, 4000, 8000,…
-$ Sleep.Disorder          <chr> "None", "None", "None", "Sleep Apnea", "Sleep Apnea", "Insomnia", "Insomnia", "None", "None", "None", "None",…
+### Methods Summary  
+- Cleaned data (parsed blood pressure, created factors)  
+- Performed summary statistics and visualizations  
+- Built a multiple linear regression model with sleep quality as the outcome  
+- Created a helper function to summarize sleep quality by groups  
+- Visualized key relationships with jitter and scatter plots  
+
+## Files Included  
+- `/data`: dataset and codebook  
+- `proposal/`: project proposal  
+- `presentation.Rmd`: slide deck source  
+- `README.Rmd`: this summary  
+- Analysis code embedded in main `.Rmd`
+
+## References  
+Sleep Health and Lifestyle Dataset (Kaggle):  
+https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset  
+
+Tidyverse Documentation: https://www.tidyverse.org/  
+R Markdown Documentation: https://rmarkdown.rstudio.com/ 

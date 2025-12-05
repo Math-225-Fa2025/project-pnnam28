@@ -1,0 +1,271 @@
+\documentclass[]{tufte-handout}
+
+% ams
+\usepackage{amssymb,amsmath}
+
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \makeatletter
+  \@ifpackageloaded{fontspec}{}{\usepackage{fontspec}}
+  \makeatother
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+  \makeatletter
+  \@ifpackageloaded{soul}{
+     \renewcommand\allcapsspacing[1]{{\addfontfeature{LetterSpace=15}#1}}
+     \renewcommand\smallcapsspacing[1]{{\addfontfeature{LetterSpace=10}#1}}
+   }{}
+  \makeatother
+
+\fi
+
+% graphix
+\usepackage{graphicx}
+\setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
+
+% booktabs
+\usepackage{booktabs}
+
+% url
+\usepackage{url}
+
+% hyperref
+\usepackage{hyperref}
+
+% units.
+\usepackage{units}
+
+
+\setcounter{secnumdepth}{-1}
+
+% citations
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+
+
+% pandoc syntax highlighting
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.50,0.00}{\textbf{#1}}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+
+% table with pandoc
+
+% multiplecol
+\usepackage{multicol}
+
+% strikeout
+\usepackage[normalem]{ulem}
+
+% morefloats
+\usepackage{morefloats}
+
+
+% tightlist macro required by pandoc >= 1.14
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+% title / author / date
+\title{Project Proposal}
+\author{Nam Pham}
+\date{}
+
+
+\begin{document}
+
+\maketitle
+
+
+
+
+\textbf{1. Data Setup}
+
+Here im import my data set in sleep and set it to clean\_names for a
+further data cleaning.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sleep }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"data/Sleep\_health\_and\_lifestyle\_dataset.csv"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{clean\_names}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 374  13
+\end{verbatim}
+
+\begin{verbatim}
+## Rows: 374
+## Columns: 13
+## $ person_id               <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,~
+## $ gender                  <chr> "Male", "Male", "Male", "Male", "Male", "Male"~
+## $ age                     <int> 27, 28, 28, 28, 28, 28, 29, 29, 29, 29, 29, 29~
+## $ occupation              <chr> "Software Engineer", "Doctor", "Doctor", "Sale~
+## $ sleep_duration          <dbl> 6.1, 6.2, 6.2, 5.9, 5.9, 5.9, 6.3, 7.8, 7.8, 7~
+## $ quality_of_sleep        <int> 6, 6, 6, 4, 4, 4, 6, 7, 7, 7, 6, 7, 6, 6, 6, 6~
+## $ physical_activity_level <int> 42, 60, 60, 30, 30, 30, 40, 75, 75, 75, 30, 75~
+## $ stress_level            <int> 6, 8, 8, 8, 8, 8, 7, 6, 6, 6, 8, 6, 8, 8, 8, 8~
+## $ bmi_category            <chr> "Overweight", "Normal", "Normal", "Obese", "Ob~
+## $ blood_pressure          <chr> "126/83", "125/80", "125/80", "140/90", "140/9~
+## $ heart_rate              <int> 77, 75, 75, 85, 85, 85, 82, 70, 70, 70, 70, 70~
+## $ daily_steps             <int> 4200, 10000, 10000, 3000, 3000, 3000, 3500, 80~
+## $ sleep_disorder          <chr> "None", "None", "None", "Sleep Apnea", "Sleep ~
+\end{verbatim}
+
+\textbf{2. Data Cleaning}
+
+In the dataset, blood pressure is a string with / symbols so I want to
+remove it by using separate to remove it and set the blood pressure to
+be an integer (Numeric).
+
+Also set the catagory varibles in dataset to be factors.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# clean dataset }
+\NormalTok{sleep\_clean }\OtherTok{\textless{}{-}}\NormalTok{ sleep }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{separate}\NormalTok{(blood\_pressure, }\AttributeTok{into =} \FunctionTok{c}\NormalTok{(}\StringTok{"systolic"}\NormalTok{, }\StringTok{"diastolic"}\NormalTok{), }\AttributeTok{sep =} \StringTok{"/"}\NormalTok{, }\AttributeTok{remove =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{systolic  =} \FunctionTok{as.numeric}\NormalTok{(systolic),}
+    \AttributeTok{diastolic =} \FunctionTok{as.numeric}\NormalTok{(diastolic)}
+\NormalTok{  )}
+
+\CommentTok{\#factor the catagories variables}
+\NormalTok{sleep\_clean }\OtherTok{\textless{}{-}}\NormalTok{ sleep\_clean }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{gender        =} \FunctionTok{factor}\NormalTok{(gender),}
+    \AttributeTok{bmi\_category  =} \FunctionTok{factor}\NormalTok{(bmi\_category, }
+                           \AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Underweight"}\NormalTok{, }\StringTok{"Normal"}\NormalTok{, }\StringTok{"Overweight"}\NormalTok{, }\StringTok{"Obese"}\NormalTok{),}
+                           \AttributeTok{ordered =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{sleep\_disorder =} \FunctionTok{factor}\NormalTok{(sleep\_disorder),}
+    \AttributeTok{occupation    =} \FunctionTok{factor}\NormalTok{(occupation)}
+\NormalTok{  )}
+
+\FunctionTok{glimpse}\NormalTok{(sleep\_clean)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Rows: 374
+## Columns: 14
+## $ person_id               <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,~
+## $ gender                  <fct> Male, Male, Male, Male, Male, Male, Male, Male~
+## $ age                     <int> 27, 28, 28, 28, 28, 28, 29, 29, 29, 29, 29, 29~
+## $ occupation              <fct> Software Engineer, Doctor, Doctor, Sales Repre~
+## $ sleep_duration          <dbl> 6.1, 6.2, 6.2, 5.9, 5.9, 5.9, 6.3, 7.8, 7.8, 7~
+## $ quality_of_sleep        <int> 6, 6, 6, 4, 4, 4, 6, 7, 7, 7, 6, 7, 6, 6, 6, 6~
+## $ physical_activity_level <int> 42, 60, 60, 30, 30, 30, 40, 75, 75, 75, 30, 75~
+## $ stress_level            <int> 6, 8, 8, 8, 8, 8, 7, 6, 6, 6, 8, 6, 8, 8, 8, 8~
+## $ bmi_category            <ord> Overweight, Normal, Normal, Obese, Obese, Obes~
+## $ systolic                <dbl> 126, 125, 125, 140, 140, 140, 140, 120, 120, 1~
+## $ diastolic               <dbl> 83, 80, 80, 90, 90, 90, 90, 80, 80, 80, 80, 80~
+## $ heart_rate              <int> 77, 75, 75, 85, 85, 85, 82, 70, 70, 70, 70, 70~
+## $ daily_steps             <int> 4200, 10000, 10000, 3000, 3000, 3000, 3500, 80~
+## $ sleep_disorder          <fct> None, None, None, Sleep Apnea, Sleep Apnea, In~
+\end{verbatim}
+
+\textbf{3. Data Summary}
+
+Here I will compute some data summary to observe some of the
+information.
+
+\begin{verbatim}
+##  sleep_duration  quality_of_sleep physical_activity_level  stress_level  
+##  Min.   :5.800   Min.   :4.000    Min.   :30.00           Min.   :3.000  
+##  1st Qu.:6.400   1st Qu.:6.000    1st Qu.:45.00           1st Qu.:4.000  
+##  Median :7.200   Median :7.000    Median :60.00           Median :5.000  
+##  Mean   :7.132   Mean   :7.313    Mean   :59.17           Mean   :5.385  
+##  3rd Qu.:7.800   3rd Qu.:8.000    3rd Qu.:75.00           3rd Qu.:7.000  
+##  Max.   :8.500   Max.   :9.000    Max.   :90.00           Max.   :8.000  
+##    heart_rate     daily_steps         age           systolic    
+##  Min.   :65.00   Min.   : 3000   Min.   :27.00   Min.   :115.0  
+##  1st Qu.:68.00   1st Qu.: 5600   1st Qu.:35.25   1st Qu.:125.0  
+##  Median :70.00   Median : 7000   Median :43.00   Median :130.0  
+##  Mean   :70.17   Mean   : 6817   Mean   :42.18   Mean   :128.6  
+##  3rd Qu.:72.00   3rd Qu.: 8000   3rd Qu.:50.00   3rd Qu.:135.0  
+##  Max.   :86.00   Max.   :10000   Max.   :59.00   Max.   :142.0  
+##    diastolic    
+##  Min.   :75.00  
+##  1st Qu.:80.00  
+##  Median :85.00  
+##  Mean   :84.65  
+##  3rd Qu.:90.00  
+##  Max.   :95.00
+\end{verbatim}
+
+\emph{The descriptive statistics show that participants in this dataset
+sleep an average of 7.13 hours per night, with sleep durations ranging
+from 5.8 to 8.5 hours. Self-reported sleep quality ranges from 4 to 9,
+with a mean of 7.31, indicating generally good perceived sleep among the
+sample. Lifestyle indicators vary widely: physical activity levels range
+from 30 to 90 (mean ≈ 59), daily steps range from 3,000 to 10,000 (mean
+≈ 6,817), and stress levels fall between 3 and 8 (mean ≈ 5.38),
+suggesting a moderately stressed population. Health-related measures
+show average heart rate around 70 bpm and blood pressure values (mean
+systolic ≈ 129, diastolic ≈ 85) within the elevated range. Participant
+ages span from 27 to 59, with a mean age of 42.}
+
+\begin{verbatim}
+## # A tibble: 3 x 6
+##   sleep_disorder     n mean_sleep_duration sd_sleep_duration mean_sleep_quality
+##   <fct>          <int>               <dbl>             <dbl>              <dbl>
+## 1 Insomnia          77                6.59             0.387               6.53
+## 2 None             219                7.36             0.732               7.63
+## 3 Sleep Apnea       78                7.03             0.975               7.21
+## # i 1 more variable: sd_sleep_quality <dbl>
+\end{verbatim}
+
+\emph{Comparing outcomes across sleep disorder categories reveals clear
+differences. Individuals with Insomnia experience the shortest sleep
+duration (6.59 hours) and the lowest sleep quality (6.53), reflecting
+the typical impact of insomnia on rest. Participants with no diagnosed
+sleep disorder report the best overall sleep, averaging 7.36 hours and a
+sleep quality of 7.63. The Sleep Apnea group falls between the other
+two, with moderately reduced sleep duration (7.03 hours) and sleep
+quality (7.21). These patterns suggest that sleep disorders meaningfully
+affect both objective sleep duration and subjective sleep quality.}
+
+\begin{center}\includegraphics{Project_files/figure-latex/sleep_vs_disorder-1} \end{center}
+
+\begin{center}\includegraphics{Project_files/figure-latex/sleep_vs_stress-1} \end{center}
+
+
+
+\end{document}
